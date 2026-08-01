@@ -108,6 +108,13 @@ API_AVAILABLE(ios(13.0), macos(10.15))
             }
         }
     }
+    id<UIApplicationDelegate> delegate = [UIApplication sharedApplication].delegate;
+    if ([delegate respondsToSelector:@selector(window)]) {
+        UIWindow* window = [(NSObject*)delegate valueForKey:@"window"];
+        if (window != nil) {
+            return window;
+        }
+    }
     return nil;
 #else
     NSWindow *window = [NSApplication sharedApplication].keyWindow;
