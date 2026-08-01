@@ -3,11 +3,11 @@ name: siwa
 platforms:
     osx:
         context:
-            frameworks: []
+            frameworks: ['AuthenticationServices', 'AppKit', 'Foundation']
             flags: ["-std=c++11", "-stdlib=libc++"]
             libs: ["c++"]
 
     ios:
         context:
-            frameworks: ['AuthenticationServices']
+            frameworks: ['AuthenticationServices', 'Foundation', 'UIKit']
             defines:    ['SUPPORTS_SIWA']

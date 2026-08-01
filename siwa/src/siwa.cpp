@@ -1,4 +1,4 @@
-#if defined(DM_PLATFORM_IOS)
+#if defined(DM_PLATFORM_IOS) || defined(DM_PLATFORM_OSX)
 
 #include "siwa.h"
 #include <dmsdk/sdk.h>
@@ -15,10 +15,6 @@ char* Siwa_GetUserId()
 
 static void Siwa_ResetCallbackData()
 {
-    free(g_SiwaCallbackData.m_userID);
-    g_SiwaCallbackData.m_userID = 0;
-    free(g_SiwaCallbackData.m_identityToken);
-    g_SiwaCallbackData.m_identityToken = 0;
     free(g_SiwaCallbackData.m_userID);
     g_SiwaCallbackData.m_userID = 0;
     free(g_SiwaCallbackData.m_email);
@@ -45,7 +41,7 @@ void Siwa_QueueCredentialCallback(const char* userID, const SiwaCredentialState 
     }
 
     g_SiwaCallbackData.m_cmd = CMD_CREDENTIAL;
-    g_SiwaCallbackData.m_userID = strdup(userID);
+    g_SiwaCallbackData.m_userID = strdup(userID != 0 ? userID : "");
     g_SiwaCallbackData.m_state = state;
 }
 
@@ -58,8 +54,8 @@ void Siwa_QueueAuthSuccessCallback(const char* identityToken, const char* userID
     }
 
     g_SiwaCallbackData.m_cmd = CMD_AUTH_SUCCESS;
-    g_SiwaCallbackData.m_identityToken = strdup(identityToken);
-    g_SiwaCallbackData.m_userID = strdup(userID);
+    g_SiwaCallbackData.m_identityToken = strdup(identityToken != 0 ? identityToken : "");
+    g_SiwaCallbackData.m_userID = strdup(userID != 0 ? userID : "");
     g_SiwaCallbackData.m_email = strdup(email != 0 ? email: "");
     g_SiwaCallbackData.m_firstName = strdup(firstName != 0 ? firstName: "");
     g_SiwaCallbackData.m_familyName = strdup(familyName != 0 ? familyName : "");
@@ -75,7 +71,7 @@ void Siwa_QueueAuthFailureCallback(const char* message)
     }
 
     g_SiwaCallbackData.m_cmd = CMD_AUTH_FAILED;
-    g_SiwaCallbackData.m_message = strdup(message);
+    g_SiwaCallbackData.m_message = strdup(message != 0 ? message : "Sign in with Apple failed");
 }
 
 
@@ -234,6 +230,9 @@ static dmExtension::Result SiwaAppInitialize(dmExtension::AppParams* params)
 
 static dmExtension::Result SiwaAppFinalize(dmExtension::AppParams* params)
 {
+    Siwa_ResetCallbackData();
+    free(g_SiwaData.m_userID);
+    g_SiwaData.m_userID = 0;
     return dmExtension::RESULT_OK;
 }
 
