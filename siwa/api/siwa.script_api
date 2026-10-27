@@ -49,9 +49,14 @@
 
   - name: authenticate
     type: function
-    desc: Show the Sign in with Apple UI
+    desc: Show the Sign in with Apple UI. Pass a backend-issued, single-use nonce
+          when the identity token will be verified by a server. The legacy
+          callback-only form remains supported.
 
     parameters:
+    - name: nonce
+      type: string
+      desc: Optional nonempty nonce to bind to the Apple identity token.
     - name: callback
       type: function
       desc: Authentication callback function.
@@ -67,7 +72,7 @@
     examples:
       - desc: |-
             ```lua
-            siwa.authenticate(function(self, data)
+            siwa.authenticate(server_nonce, function(self, data)
             	print(data.identity_token)
             	print(data.user_id)
             	print(data.first_name, data.family_name)
@@ -77,6 +82,8 @@
             	end
             end)
             ```
+
+            The legacy `siwa.authenticate(callback)` form omits nonce binding.
 
 #*****************************************************************************************************
 
