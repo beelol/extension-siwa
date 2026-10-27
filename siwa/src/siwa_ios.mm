@@ -82,10 +82,13 @@ API_AVAILABLE(ios(13.0), macos(10.15))
 }
 
 // triggers the sign in with Apple native ui flow to begin.
-- (void) loginWithUI
+- (void) loginWithUI:(const char*)nonce
 {
     ASAuthorizationAppleIDRequest* request = [self.m_idProvider createRequest];
     request.requestedScopes = @[ASAuthorizationScopeFullName, ASAuthorizationScopeEmail];
+    if (nonce != 0) {
+        request.nonce = [NSString stringWithUTF8String:nonce];
+    }
 
     self.m_authController = [[ASAuthorizationController alloc] initWithAuthorizationRequests:@[request]];
     self.m_authController.presentationContextProvider = self;
@@ -198,9 +201,9 @@ void Siwa_PlatformDoGetCredentialState() {
 
 API_AVAILABLE(ios(13.0), macos(10.15))
 // Kicks off the sign in with apple flow.
-void Siwa_PlatformDoAuthenticateWithApple() {
+void Siwa_PlatformDoAuthenticateWithApple(const char* nonce) {
     SiwaManager *siwaMan = GetSiwaManager();
-    [siwaMan loginWithUI];
+    [siwaMan loginWithUI:nonce];
 }
 
 // Checks if Siwa is supported on this device by seeing if the main
@@ -214,8 +217,8 @@ void Siwa_PlatformGetCredentialState() {
     Siwa_PlatformDoGetCredentialState();
 }
 
-void Siwa_PlatformAuthenticateWithApple() {
-    Siwa_PlatformDoAuthenticateWithApple();
+void Siwa_PlatformAuthenticateWithApple(const char* nonce) {
+    Siwa_PlatformDoAuthenticateWithApple(nonce);
 }
 
 #endif

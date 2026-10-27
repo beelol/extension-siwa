@@ -23,6 +23,18 @@ To get started you need to enable your app’s App ID with the Sign in with Appl
 
 ## Usage
 
+When a backend verifies the returned identity token, request a unique,
+single-use nonce from that backend and pass it before the callback:
+
+```lua
+siwa.authenticate(server_nonce, function(self, data)
+	-- Send data.identity_token to the backend that issued server_nonce.
+end)
+```
+
+`siwa.authenticate(callback)` remains supported for existing integrations, but
+does not bind the identity token to a server challenge.
+
 ### Check Sign in with Apple support
 
 ```Lua
@@ -34,7 +46,7 @@ end)
 ### Trigger Sign in with Apple
 
 ```Lua
-siwa.authenticate(id, function(self, data)
+siwa.authenticate(server_nonce, function(self, data)
 	print(data.identity_token)
 	print(data.user_id)
 	print(data.first_name, data.family_name)

@@ -208,9 +208,22 @@ static int Siwa_AuthenticateWithApple(lua_State* L) {
         return 1;
     }
 
-    luaL_checktype(L, 1, LUA_TFUNCTION);
-    Siwa_SetupCallback(L, 1);
-    Siwa_PlatformAuthenticateWithApple();
+    const char* nonce = 0;
+    int callbackIndex = 1;
+    if (lua_type(L, 1) == LUA_TSTRING)
+    {
+        size_t nonceLength = 0;
+        nonce = lua_tolstring(L, 1, &nonceLength);
+        if (nonceLength == 0)
+        {
+            return luaL_argerror(L, 1, "nonce must not be empty");
+        }
+        callbackIndex = 2;
+    }
+
+    luaL_checktype(L, callbackIndex, LUA_TFUNCTION);
+    Siwa_SetupCallback(L, callbackIndex);
+    Siwa_PlatformAuthenticateWithApple(nonce);
 
     lua_pushboolean(L, 1);
     return 1;

@@ -77,7 +77,7 @@ bool Siwa_PlatformIsSupported();
 // Triggered by a call from lua to start the sign in with apple flow
 // expects the callback to be a reference number to the lua registry
 // expects the context to be reference number to the lua registry
-void Siwa_PlatformAuthenticateWithApple();
+void Siwa_PlatformAuthenticateWithApple(const char* nonce);
 
 // Triggered by a call from lua to check if a provided apple id grants this app permission to use that id.
 // expects the callback to be a reference number to the lua registry
